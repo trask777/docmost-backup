@@ -1,0 +1,17 @@
+[project]
+name = "docmost-backup"
+version = "1.0.0"
+description = "Docmost manual backup tool - direct API with secure credentials"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.31",
+    "keyring>=24.0",
+]
+
+[project.scripts]
+docmost-backup = "launcher.docmost_backup:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
