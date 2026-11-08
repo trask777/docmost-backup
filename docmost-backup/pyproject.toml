@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-docmost-backup = "launcher.docmost_backup:main"
+docmost-backup = "docmost_backup:main"
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]

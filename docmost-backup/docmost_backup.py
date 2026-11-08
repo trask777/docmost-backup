@@ -28,12 +28,33 @@ try:
 except ImportError:
     KEYRING_AVAILABLE = False
 
+# ─── Auto-install dependencies ──────────────────────────────────────
+def ensure_deps():
+    """Install missing dependencies on first run."""
+    if "--no-deps" in sys.argv:
+        return
+    required = ["requests", "keyring"]
+    missing = []
+    for pkg in required:
+        try:
+            __import__(pkg)
+        except ImportError:
+            missing.append(pkg)
+    if missing:
+        print(f"Installing missing packages: {', '.join(missing)}...")
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", *missing, "--quiet"])
+            print("Done.")
+        except subprocess.CalledProcessError:
+            print(f"Failed. Run manually: pip install {' '.join(missing)}")
+            sys.exit(1)
+
 # ─── Configuration ────────────────────────────────────────────────
 
 CONFIG_DIR = Path(os.getenv("APPDATA", Path.home() / "AppData" / "Roaming")) / "DocmostBackup"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 CREDENTIAL_SERVICE = "DocmostBackup"
-VERSION = "2.3.0"
+VERSION = "1.0.0"
 
 DEFAULT_CONFIG = {
     "docmost_url": "",
@@ -788,7 +809,7 @@ def cmd_reset(_config: Dict[str, Any], _password: Optional[str] = None) -> bool:
 # ─── Main Entry Point ─────────────────────────────────────────────
 
 COMMANDS = {
-    "run": (cmd_run, "Run backup (default)"),
+    "run": (cmd_run, "Run backup"),
     "config": (cmd_config, "Configure Docmost connection and backup folder"),
     "test": (cmd_test, "Test connection to Docmost"),
     "spaces": (cmd_spaces, "List available spaces"),
@@ -796,25 +817,49 @@ COMMANDS = {
     "reset": (cmd_reset, "Reset all configuration and credentials"),
 }
 
+class CustomHelpFormatter(argparse.HelpFormatter):
+    def format_help(self):
+        # Build custom help output
+        lines = []
+
+        # Description
+        lines.append("Docmost Backup - A simple and reliable way to back up your Docmost spaces and pages directly from Windows.")
+        lines.append("")
+        lines.append("Run a docmost-backup with a command to get started!")
+        lines.append("")
+
+        # Commands section
+        lines.append("Commands:")
+        for cmd, (_, desc) in COMMANDS.items():
+            lines.append(f"  {cmd:<10} {desc}")
+        lines.append("")
+
+        # Examples section
+        lines.append("Examples:")
+        for cmd in COMMANDS.keys():
+            lines.append(f"  docmost-backup {cmd}")
+        lines.append("")
+
+        # Options section
+        lines.append("options:")
+        lines.append("  -h, --help            show this help message and exit")
+        lines.append(f"  -v, --version         show program's version number and exit")
+
+        return "\n".join(lines)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="docmost-backup",
-        description="Docmost Backup - Direct API backup to local Markdown (Obsidian-ready)",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="Examples:\n"
-               "  docmost-backup run       # Run backup\n"
-               "  docmost-backup config    # Reconfigure\n"
-               "  docmost-backup test      # Test connection\n"
-               "  docmost-backup spaces    # List spaces\n"
-               "  docmost-backup version   # Show version\n"
-               "  docmost-backup reset     # Reset all settings",
+        description="",  # We handle description in custom formatter
+        formatter_class=CustomHelpFormatter,
+        add_help=True,
     )
     parser.add_argument(
         "command",
         nargs="?",
-        default="run",
         choices=list(COMMANDS.keys()),
-        help="Command to run (default: run)",
+        help=argparse.SUPPRESS,  # Hide from default help
     )
     parser.add_argument(
         "-v", "--version",
@@ -827,8 +872,19 @@ def build_parser() -> argparse.ArgumentParser:
 def main():
     enable_vt_mode()
 
+    # Handle --no-deps before argparse sees it
+    if "--no-deps" in sys.argv:
+        sys.argv.remove("--no-deps")
+    else:
+        ensure_deps()
+
     parser = build_parser()
     args = parser.parse_args()
+
+    # If no command provided, show help/menu and exit
+    if not args.command:
+        parser.print_help()
+        return
 
     # Load config (may not exist yet for config/reset commands)
     config = load_config() or {}
