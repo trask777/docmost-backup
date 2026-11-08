@@ -2,7 +2,7 @@
 
 **A simple, cross-platform backup tool for your Docmost notes and knowledge base.**
 
-Download all your Docmost spaces, pages, and images as Markdown files, ready to use with [Obsidian](https://obsidian.md/) or any other Markdown-compatible note-taking application.
+Download all your Docmost spaces, pages, and images as Markdown files, ready to use with any Markdown-compatible note-taking application.
 
 Works on **Windows, macOS, and Linux**.
 
@@ -161,7 +161,7 @@ Open the specified folder to find your backup.
 
 The exported content is organized into individual space folders containing Markdown files and associated images.
 
-You can open these files directly in Obsidian or any other application that supports Markdown.
+You can open these files directly in any application that supports Markdown.
 
 ---
 

@@ -154,6 +154,29 @@ def enable_vt_mode():
         except Exception:
             pass
 
+# ─── Logo ─────────────────────────────────────────────────────────────
+
+LOGO = r"""
+{cyan}{bold}
+______ _____ _____ ___  ________ _____ _____  ______  ___  _____  _   ___   _______
+|  _  \  _  /  __ \|  \/  |  _  /  ___|_   _| | ___ \/ _ \/  __ \| | / / | | | ___ \
+| | | | | | | /  \/| .  . | | | \ `--.  | |   | |_/ / /_\ \ /  \/| |/ /| | | | |_/ /
+| | | | | | | |    | |\/| | | | |`--. \ | |   | ___ \  _  | |    |    \| | | |  __/
+| |/ /\ \_/ / \__/\| |  | \ \_/ /\__/ / | |   | |_/ / | | | \__/\| |\  \ |_| | |
+|___/  \___/ \____/\_|  |_/\___/\____/  \_/   \____/\_| |_/\____/\_| \_/\___/\_|
+
+                            v{version}
+
+A simple and reliable way to back up your Docmost spaces and pages directly from your PC.
+
+Run a docmost-backup with a command to get started!
+{reset}
+""".format(cyan=Colors.CYAN, bold=Colors.BOLD, reset=Colors.RESET, version=VERSION)
+
+def print_logo():
+    print(LOGO)
+
+
 def print_header(text: str):
     print(f"\n{Colors.CYAN}{Colors.BOLD}{'=' * 64}{Colors.RESET}")
     print(f"{Colors.CYAN}{Colors.BOLD}  {text}{Colors.RESET}")
@@ -819,14 +842,8 @@ COMMANDS = {
 
 class CustomHelpFormatter(argparse.HelpFormatter):
     def format_help(self):
-        # Build custom help output
+        # Build custom help output (description now in logo)
         lines = []
-
-        # Description
-        lines.append("Docmost Backup - A simple and reliable way to back up your Docmost spaces and pages directly from Windows.")
-        lines.append("")
-        lines.append("Run a docmost-backup with a command to get started!")
-        lines.append("")
 
         # Commands section
         lines.append("Commands:")
@@ -871,6 +888,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main():
     enable_vt_mode()
+    print_logo()
 
     # Handle --no-deps before argparse sees it
     if "--no-deps" in sys.argv:

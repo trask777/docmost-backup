@@ -1,0 +1,23 @@
+Docmost Backup — Quick Start
+=============================
+
+Run backup:
+  python docmost_backup.py run
+
+First run asks for:
+  • Docmost URL (e.g., http://192.168.1.50:3000)
+  • Email & password (password stored securely in OS keychain)
+
+Other commands:
+  config    # Change settings
+  test      # Test connection
+  spaces    # List spaces
+  version   # Show version
+  reset     # Delete all settings + password
+
+Install globally (optional):
+  pip install .      # Then: docmost-backup run
+
+Prerequisites: Python 3.8+ • 7-Zip
+
+See ../README.md for full docs.
