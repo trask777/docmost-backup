@@ -3,21 +3,32 @@ Docmost Backup — Quick Start
 
 Run backup:
   python docmost_backup.py run
+  # Lists your Docmost spaces — press Enter for ALL or type numbers (e.g., 1,3,5)
 
 First run asks for:
   • Docmost URL (e.g., http://192.168.1.50:3000)
   • Email & password (password stored securely in OS keychain)
 
 Other commands:
-  config    # Change settings
-  test      # Test connection
-  spaces    # List spaces
-  version   # Show version
-  reset     # Delete all settings + password
+  config     # Change settings
+  test       # Test connection (success/fail only)
+  spaces     # List spaces
+  version    # Show version
+  reset      # Delete all settings + password
+  restore    # Restore spaces from local backup
+
+Restore spaces (auto-discovers backups):
+  python docmost_backup.py restore
+  # Lists available backups, press Enter for latest
+  # Then lists spaces in that backup — press Enter for ALL or type numbers (e.g., 1,3,5)
+
+Restore specific backup:
+  python docmost_backup.py restore --path ./backup/folder --space-name "MySpace"
 
 Install globally (optional):
   pip install .      # Then: docmost-backup run
 
 Prerequisites: Python 3.8+ • 7-Zip
+
 
 See ../README.md for full docs.

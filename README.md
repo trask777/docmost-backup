@@ -139,12 +139,38 @@ Once configured, simply run  **`docmost-backup run`** every time you want to ba
 
 | Command | Description |
 | --- | --- |
-| `docmost-backup run` | Run a backup (main command) |
+| `docmost-backup run` | Run a backup (interactively select spaces) |
 | `docmost-backup config` | Change settings (URL, email, backup folder) |
 | `docmost-backup test` | Test your connection without starting a backup |
 | `docmost-backup spaces` | List all spaces in your Docmost instance |
 | `docmost-backup version` | Display the installed version |
 | `docmost-backup reset` | Delete all settings and stored credentials |
+| `docmost-backup restore` | Restore spaces from local backup (interactive) |
+
+---
+
+## 🔁 Backup & Restore with Space Selection
+
+Both **backup** and **restore** commands let you choose which spaces to process:
+
+### Backup (`docmost-backup run`)
+
+1. Connects to your Docmost instance
+2. Lists all available spaces
+3. **Press Enter** to back up **ALL** spaces  
+   **Or type numbers** (e.g., `1,3,5`) to select specific spaces
+
+### Restore (`docmost-backup restore`)
+
+1. Scans your backup folder for existing backups
+2. Select a backup (press Enter for latest, or type a number)
+3. Lists all spaces in that backup
+4. **Press Enter** to restore **ALL** spaces  
+   **Or type numbers** (e.g., `1,3,5`) to select specific spaces
+
+Each selected space is:
+- **Backup:** Exported as Markdown + images into a dated folder
+- **Restore:** Created (or reused) in Docmost, then pages imported one by one
 
 ---
 
@@ -227,25 +253,7 @@ Supported connection methods include:
 
 -   **Local network (LAN/Wi-Fi):** For example, `http://192.168.1.50:3000`.
 -   **VPN:** If your Docmost server is hosted on a remote private network.
--   **Port forwarding:** For remote access (HTTPS is strongly recommended).
-
-### Test Your Connection
-
-Open your Docmost URL in a web browser.
-
-For example:
-
-```text
-http://your-docmost-ip:3000
-```
-
-If you can see the Docmost login page, your server is reachable from your computer.
-
-You can also test the connection using:
-
-```bash
-docmost-backup test
-```
+-   **Tailscale/Claudflare Tunnel:** For remote access.
 
 ---
 
@@ -260,12 +268,6 @@ docmost-backup test
 | Login failed | Verify your email and password by logging into Docmost through your browser. |
 | ZIP validation failed | Try running the backup again. If the problem persists, check your Docmost server logs. |
 
-### Still Having Problems?
-
-1.  Run `docmost-backup test` to diagnose connection issues.
-2.  Check the troubleshooting table above.
-3.  If the issue persists, open a GitHub issue and include the error message.
-
 ---
 
 ## 📄 License
@@ -273,13 +275,3 @@ docmost-backup test
 This project is licensed under the **MIT License**.
 
 Free to use, modify, and share.
-
----
-
-## 🙏 A Final Note
-
-This is a personal project that I'm sharing with the community in the hope that it helps someone else keep a local copy of their Docmost knowledge base.
-
-If you find it useful, feel free to use it, modify it, or contribute.
-
-**Happy backing up!**
